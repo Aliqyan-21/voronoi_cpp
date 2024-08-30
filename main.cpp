@@ -12,11 +12,30 @@ uint32_t image[Height][Width];
 #define SEED_MARKER_RADIUS 5
 #define SEED_MARKER_COLOR 0xFFFFFFFF
 
+// pallete colors
+#define flamingo 0xFFFCCDD2
+#define mauve 0xFFCFA67B
+#define red 0xFFFA8B83
+#define maroon 0xFFEAA0CB
+#define peach 0xFFF8B37A
+#define yellow 0xFFFAE2F9
+#define green 0xFFAAE316
+#define teal 0xFF9DE254
+#define sky 0xFF8EDCB9
+#define sapphire 0xFF7EC7C4
+#define blue 0xFF8FB4A9
+#define lavender 0xFFBFBEE4
+#define apricot 0xFF0B64FE
+
 struct Point {
   int x, y;
 };
 
 Point seeds[Seeds_count];
+uint32_t pallete[] = {
+    flamingo, mauve, red, maroon, peach, yellow, green, teal, sky, apricot,
+};
+const int pallete_size = sizeof(pallete) / sizeof(pallete[0]);
 
 void fill_image(uint32_t color) {
   for (int i = 0; i < Height; i++) {
@@ -52,6 +71,12 @@ void save_image_ppm(const std::string &filePath) {
   f.close();
 }
 
+int sqrt_dist(int x1, int y1, int x2, int y2) {
+  int dx = x1 - x2;
+  int dy = y1 - y2;
+  return dx * dx + dy * dy;
+}
+
 void fill_cicle(int cx, int cy, int radius, uint32_t color) {
   int x0 = cx - radius;
   int y0 = cy - radius;
@@ -62,10 +87,7 @@ void fill_cicle(int cx, int cy, int radius, uint32_t color) {
     if (i >= 0 && i < Width) {
       for (int j = y0; j <= y1; j++) {
         if (j >= 0 && j < Height) {
-          int dx = cx - i;
-          int dy = cy - j;
-
-          if (dx * dx + dy * dy <= radius * radius)
+          if (sqrt_dist(cx, cy, i, j) <= radius * radius)
             image[j][i] = color;
         }
       }
@@ -80,16 +102,32 @@ void generate_random_seeds() {
   }
 }
 
-int main(void) {
-  // aa bb gg rr --> 0xFF0000FF --> color_red
-  fill_image(BACKGROUND_COLOR);
-
-  generate_random_seeds();
-
+void render_seed_markers() {
   for (int i = 0; i < Seeds_count; i++) {
     fill_cicle(seeds[i].x, seeds[i].y, SEED_MARKER_RADIUS, SEED_MARKER_COLOR);
   }
+}
 
+void render_voronoi() {
+  for (int y = 0; y < Height; y++) {
+    for (int x = 0; x < Width; x++) {
+      int j = 0;
+      for (int i = 1; i < Seeds_count; i++) {
+        if (sqrt_dist(seeds[i].x, seeds[i].y, x, y) <
+            sqrt_dist(seeds[j].x, seeds[j].y, x, y)) {
+          j = i;
+        }
+      }
+      image[y][x] = pallete[j % pallete_size];
+    }
+  }
+}
+
+int main(void) {
+  fill_image(BACKGROUND_COLOR); // aa bb gg rr --> 0xFF0000FF --> color_red
+  generate_random_seeds();
+  render_voronoi();
+  render_seed_markers();
   save_image_ppm("output.ppm");
 
   return 0;
