@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <ctime>
 #include <fstream>
 #include <iostream>
 
@@ -10,7 +11,7 @@ uint32_t image[Height][Width];
 
 #define BACKGROUND_COLOR 0xFF121212
 #define SEED_MARKER_RADIUS 5
-#define SEED_MARKER_COLOR 0xFFFFFFFF
+#define SEED_MARKER_COLOR 0xFF121212
 
 // pallete colors
 #define flamingo 0xFFFCCDD2
@@ -124,6 +125,7 @@ void render_voronoi() {
 }
 
 int main(void) {
+  srand(time(0));
   fill_image(BACKGROUND_COLOR); // aa bb gg rr --> 0xFF0000FF --> color_red
   generate_random_seeds();
   render_voronoi();
