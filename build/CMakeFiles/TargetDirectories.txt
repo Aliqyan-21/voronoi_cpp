@@ -1,0 +1,3 @@
+/home/aliqyanabid/College/Projects/voronoi/build/CMakeFiles/main.dir
+/home/aliqyanabid/College/Projects/voronoi/build/CMakeFiles/edit_cache.dir
+/home/aliqyanabid/College/Projects/voronoi/build/CMakeFiles/rebuild_cache.dir
