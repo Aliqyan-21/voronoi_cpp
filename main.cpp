@@ -16,18 +16,23 @@ void fill_image(uint32_t color) {
 
 void save_image_ppm(const std::string &filePath) {
   std::ofstream f(filePath, std::ios::binary);
+
   if (!f) {
     std::cerr << "Error: could not open file " << filePath << std::endl;
     return;
   }
+
+  // header file
   f << "P6\n" << Width << " " << Height << "\n255\n";
 
   for (int i = 0; i < Height; i++) {
     for (int j = 0; j < Width; j++) {
       uint32_t pixel = image[i][j];
+      // masking and taking individual r, g and b colors
       uint8_t bytes[3] = {static_cast<uint8_t>((pixel & 0x0000FF) >> 8 * 0),
                           static_cast<uint8_t>((pixel & 0x00FF00) >> 8 * 1),
                           static_cast<uint8_t>((pixel & 0xFF0000) >> 8 * 2)};
+      // writing the pixels in file
       f.write(reinterpret_cast<char *>(bytes), sizeof(bytes));
     }
   }
@@ -38,6 +43,8 @@ void save_image_ppm(const std::string &filePath) {
 int main(void) {
   // aa bb gg rr --> 0xFF0000FF --> color_red
   fill_image(0xFF0000FF);
+
   save_image_ppm("output.ppm");
+
   return 0;
 }
