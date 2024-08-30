@@ -2,6 +2,8 @@
 
 This project generates a Voronoi diagram using randomly placed seeds on a 2D plane. The diagram is rendered as an image in the PPM format, where each pixel is colored based on its proximity to the nearest seed.
 
+![sample](https://github.com/user-attachments/assets/28a9377d-3cee-4d50-93df-1b6610ca0e1d)
+
 ### Features
 
 - **Voronoi Diagram Rendering:** Generates a Voronoi diagram with a specified number of seeds.
